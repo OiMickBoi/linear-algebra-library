@@ -1,8 +1,8 @@
 Vectors and Vector Operations
 
 - [ X ] Vector representation in real and complex spaces
-- [ ] Vector addition and scalar multiplication
-- [ ] Inner (dot) product
+- [ X ] Vector addition and scalar multiplication
+- [ X ] Inner (dot) product
 - [ ] Vector norms and normalization
 - [ ] Complex conjugates for vectors
 - [ ] Unit vectors

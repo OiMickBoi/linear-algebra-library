@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <assert.h>  // Standard C library header
 #include <stdbool.h> // For boolean values
 #include <math.h> // For boolean values
@@ -161,6 +162,229 @@ void test_vector_add_zero() {
     printf("✓ Zero vector addition test passed\n");
 }
 
+
+void test_scalar_mult_basic() {
+    printf("Testing basic scalar multiplication...\n");
+    
+    Vector* v = vector_create(3);
+    // Create vector [1.0, 2.0, 3.0]
+    vector_set(v, 0, 1.0);
+    vector_set(v, 1, 2.0);
+    vector_set(v, 2, 3.0);
+    
+    // Multiply by 2.0
+    Vector* result = vector_scalar_multiply(v, 2.0);
+    assert(result != NULL);
+    
+    // Check result is [2.0, 4.0, 6.0]
+    assert(approx_equal(vector_get(result, 0), 2.0, 1e-10));
+    assert(approx_equal(vector_get(result, 1), 4.0, 1e-10));
+    assert(approx_equal(vector_get(result, 2), 6.0, 1e-10));
+    
+    vector_destroy(v);
+    vector_destroy(result);
+    
+    printf("✓ Basic scalar multiplication test passed\n");
+}
+
+// Test multiplication by zero
+void test_scalar_mult_zero() {
+    printf("Testing multiplication by zero...\n");
+    
+    Vector* v = vector_create(2);
+    vector_set(v, 0, 5.0);
+    vector_set(v, 1, -3.0);
+    
+    Vector* result = vector_scalar_multiply(v, 0.0);
+    assert(result != NULL);
+    
+    // Check result is [0.0, 0.0]
+    assert(approx_equal(vector_get(result, 0), 0.0, 1e-10));
+    assert(approx_equal(vector_get(result, 1), 0.0, 1e-10));
+    
+    vector_destroy(v);
+    vector_destroy(result);
+    
+    printf("✓ Zero multiplication test passed\n");
+}
+
+// Test multiplication by negative scalar
+void test_scalar_mult_negative() {
+    printf("Testing multiplication by negative scalar...\n");
+    
+    Vector* v = vector_create(2);
+    vector_set(v, 0, 1.0);
+    vector_set(v, 1, -2.0);
+    
+    Vector* result = vector_scalar_multiply(v, -2.0);
+    assert(result != NULL);
+    
+    // Check result is [-2.0, 4.0]
+    assert(approx_equal(vector_get(result, 0), -2.0, 1e-10));
+    assert(approx_equal(vector_get(result, 1), 4.0, 1e-10));
+    
+    vector_destroy(v);
+    vector_destroy(result);
+    
+    printf("✓ Negative scalar multiplication test passed\n");
+}
+
+// Test with NULL vector
+void test_scalar_mult_null() {
+    printf("Testing scalar multiplication with NULL vector...\n");
+    
+    Vector* result = vector_scalar_multiply(NULL, 2.0);
+    assert(result == NULL);
+    assert(errno == EINVAL);
+    
+    printf("✓ NULL vector test passed\n");
+}
+
+// Test with fractional scalar
+void test_scalar_mult_fraction() {
+    printf("Testing multiplication by fraction...\n");
+    
+    Vector* v = vector_create(2);
+    vector_set(v, 0, 2.0);
+    vector_set(v, 1, 4.0);
+    
+    Vector* result = vector_scalar_multiply(v, 0.5);
+    assert(result != NULL);
+    
+    // Check result is [1.0, 2.0]
+    assert(approx_equal(vector_get(result, 0), 1.0, 1e-10));
+    assert(approx_equal(vector_get(result, 1), 2.0, 1e-10));
+    
+    vector_destroy(v);
+    vector_destroy(result);
+    
+    printf("✓ Fractional multiplication test passed\n");
+  }
+
+void test_scalar_mult_empty() {
+    printf("Testing scalar multiplication of empty vector...\n");
+    
+    // Create empty vector (dimension 0)
+    Vector* v = vector_create(0);
+    assert(v != NULL);
+    assert(v->size == 0);
+    
+    // Multiply by some scalar
+    Vector* result = vector_scalar_multiply(v, 2.5);
+    assert(result != NULL);
+    assert(result->size == 0);
+    
+    vector_destroy(v);
+    vector_destroy(result);
+    
+    printf("✓ Empty vector multiplication test passed\n");
+}
+
+
+void test_inner_product_basic() {
+    printf("Testing basic inner product...\n");
+    
+    // Create two 2D vectors: [1,2] and [3,4]
+    Vector* a = vector_create(2);
+    Vector* b = vector_create(2);
+    
+    vector_set(a, 0, 1.0);
+    vector_set(a, 1, 2.0);
+    vector_set(b, 0, 3.0);
+    vector_set(b, 1, 4.0);
+    
+    // [1,2]·[3,4] = 1*3 + 2*4 = 11
+    double result = vector_inner_product(a, b);
+    double expected = 11.0;
+    
+    if (!approx_equal(result, expected, 1e-10)) {
+        printf("❌ Test failed!\n");
+        printf("Expected: %f\n", expected);
+        printf("Actual: %f\n", result);
+        printf("Vectors:\n");
+        printf("a = ");
+        vector_print(a);
+        printf("b = ");
+        vector_print(b);
+        exit(1);
+    }
+    
+    vector_destroy(a);
+    vector_destroy(b);
+    printf("✓ Basic inner product test passed\n");
+}
+void test_inner_product_zero_vector() {
+    printf("Testing inner product with zero vector...\n");
+    
+    // Create [0,0] and [1,2]
+    Vector* zero = vector_create(2);
+    Vector* v = vector_create(2);
+    
+    vector_set(v, 0, 1.0);
+    vector_set(v, 1, 2.0);
+    
+    double result = vector_inner_product(zero, v);
+    assert(approx_equal(result, 0.0, 1e-10));
+    
+    vector_destroy(zero);
+    vector_destroy(v);
+    printf("✓ Zero vector inner product test passed\n");
+}
+
+void test_inner_product_different_dimensions() {
+    printf("Testing inner product with different dimensions...\n");
+    
+    Vector* a = vector_create(2);  // 2D vector
+    Vector* b = vector_create(3);  // 3D vector
+    
+    vector_set(a, 0, 1.0);
+    vector_set(a, 1, 2.0);
+    vector_set(b, 0, 1.0);
+    vector_set(b, 1, 2.0);
+    vector_set(b, 2, 3.0);
+    
+    double result = vector_inner_product(a, b);
+    // Should return 0.0 and set errno
+    assert(approx_equal(result, 0.0, 1e-10));
+    
+    vector_destroy(a);
+    vector_destroy(b);
+    printf("✓ Different dimensions test passed\n");
+}
+
+void test_inner_product_null() {
+    printf("Testing inner product with NULL vectors...\n");
+    
+    Vector* v = vector_create(2);
+    vector_set(v, 0, 1.0);
+    vector_set(v, 1, 2.0);
+    
+    double result = vector_inner_product(NULL, v);
+    assert(approx_equal(result, 0.0, 1e-10));
+    
+    result = vector_inner_product(v, NULL);
+    assert(approx_equal(result, 0.0, 1e-10));
+    
+    vector_destroy(v);
+    printf("✓ NULL vector test passed\n");
+}
+
+void test_inner_product_identical() {
+    printf("Testing inner product of vector with itself...\n");
+    
+    // Create [1,2]
+    Vector* v = vector_create(2);
+    vector_set(v, 0, 1.0);
+    vector_set(v, 1, 2.0);
+    
+    // [1,2]·[1,2] = 1*1 + 2*2 = 5
+    double result = vector_inner_product(v, v);
+    assert(approx_equal(result, 5.0, 1e-10));
+    
+    vector_destroy(v);
+    printf("✓ Self inner product test passed\n");
+}
+
 int main() {
   printf("\nRunning vector tests...\n");
   printf("------------------------\n");
@@ -172,6 +396,19 @@ int main() {
   test_vector_set_get();
   test_vector_add_mismatched_dims();
   test_vector_add_zero();
+
+  test_scalar_mult_basic();
+  test_scalar_mult_zero();
+  test_scalar_mult_negative();
+  test_scalar_mult_null();
+  test_scalar_mult_fraction();
+  test_scalar_mult_empty();
+  
+  test_inner_product_basic();
+  test_inner_product_zero_vector();
+  test_inner_product_different_dimensions();
+  test_inner_product_null();
+  test_inner_product_identical();
 
   printf("------------------------\n");
 

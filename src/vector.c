@@ -1,5 +1,3 @@
-// #include <cerrno>
-// #include <cstddef>
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -54,10 +52,44 @@ Vector* vector_add(Vector* a, Vector* b) {
     return NULL;
   }
 
-
   Vector* result = vector_create(a->size);
   for (int i = 0; i < a->size; i++) {
     result->elements[i] = a->elements[i] + b->elements[i];
   }
   return result;
+}
+
+Vector* vector_scalar_multiply(Vector* v, double scalar){
+  // Check for null inputs
+  if (v == NULL) {
+    errno = EINVAL;
+    return NULL;
+  } 
+  
+  Vector* result = vector_create(v->size);
+  for (int i = 0; i < v->size; i++) {
+    result->elements[i] = v->elements[i] * scalar;
+  }
+  return result;
+}  
+
+double vector_inner_product(Vector* a, Vector* b){
+  if (a == NULL || b == NULL) {
+    errno = EINVAL;
+    return 0.0;
+  } 
+
+  // Check to vectors are same size
+  if (a->size != b->size) {
+    errno = EINVAL;
+    return 0.0;
+  }
+
+  double sum = 0;
+
+  for (int i = 0; i < a->size; i++) {
+    sum += a->elements[i] * b->elements[i];
+  }
+
+  return sum;
 }
