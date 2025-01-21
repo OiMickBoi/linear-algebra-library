@@ -20,4 +20,7 @@ Vector* vector_add(Vector* a, Vector* b);      // Adds two vectors together
 Vector* vector_scalar_multiply(Vector* v, double scalar);  
 double vector_inner_product(Vector* a, Vector* b);
 
+// Vector Norms
+double vector_magnitude(Vector* a);
+Vector* vector_norm(Vector* a);
 #endif

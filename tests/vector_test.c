@@ -385,6 +385,40 @@ void test_inner_product_identical() {
     printf("✓ Self inner product test passed\n");
 }
 
+void test_vector_magnitude() {
+  printf("Testing vector magnitude...\n");
+  
+  // Create [1,2]
+  Vector* v = vector_create(2);
+  vector_set(v, 0, 3.0);
+  vector_set(v, 1, 4.0);
+  
+  // sqrt(3^2 + 4^2) = 5
+  double result = vector_magnitude(v);
+  printf("The answer is ");
+  printf("%lf\n", result);
+
+  assert(approx_equal(result, 5.0, 1e-10));
+  
+  vector_destroy(v);
+  printf("✓ Self inner product test passed\n");
+}
+
+void test_vector_norm() {
+  printf("Testing vector normalization...\n");
+
+  // Create [3,4]
+  Vector* v = vector_create(2);
+  vector_set(v, 0, 3.0);
+  vector_set(v, 1, 4.0);
+
+  // v^=(3/5, 4/5)=(0.6,0.8)
+
+  Vector* result = vector_norm(v);
+  assert(approx_equal(result->elements[0], 0.6, 1e-10));
+  assert(approx_equal(result->elements[1], 0.8, 1e-10));
+}
+
 int main() {
   printf("\nRunning vector tests...\n");
   printf("------------------------\n");
@@ -409,6 +443,8 @@ int main() {
   test_inner_product_different_dimensions();
   test_inner_product_null();
   test_inner_product_identical();
+  test_vector_magnitude();
+  test_vector_norm();
 
   printf("------------------------\n");
 

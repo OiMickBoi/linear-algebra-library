@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include <errno.h>
 #include "../include/vector.h"
 
@@ -92,4 +93,21 @@ double vector_inner_product(Vector* a, Vector* b){
   }
 
   return sum;
+}
+
+double vector_magnitude(Vector* a) {
+  double magnitude = 0;
+  for (int i = 0; i < a->size; i++) {
+    magnitude += a->elements[i] * a->elements[i];
+	}
+  return sqrt(magnitude);
+}
+
+Vector* vector_norm(Vector* a) {
+  double magnitude = vector_magnitude(a);
+	Vector* normalized = vector_create(a->size);
+  for (int i = 0; i < normalized->size; i++) {
+    normalized->elements[i] = a->elements[i] / magnitude;
+	}
+	return normalized;
 }
