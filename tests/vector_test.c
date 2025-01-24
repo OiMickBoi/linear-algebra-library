@@ -401,7 +401,7 @@ void test_vector_magnitude() {
   assert(approx_equal(result, 5.0, 1e-10));
   
   vector_destroy(v);
-  printf("✓ Self inner product test passed\n");
+  printf("✓ Vector Magnitude test passed\n");
 }
 
 void test_vector_norm() {
@@ -417,6 +417,10 @@ void test_vector_norm() {
   Vector* result = vector_norm(v);
   assert(approx_equal(result->elements[0], 0.6, 1e-10));
   assert(approx_equal(result->elements[1], 0.8, 1e-10));
+  vector_destroy(v);
+  vector_destroy(result);
+  printf("✓ Vector normalization test passed\n");
+
 }
 
 int main() {
